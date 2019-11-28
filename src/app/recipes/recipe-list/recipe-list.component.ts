@@ -1,33 +1,37 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 
-import { Recipe } from '../recipe.model';
+import { Recipe } from "../recipe.model";
+import { RecipeService } from "src/app/shared/services/recipe.service";
 
 @Component({
-  selector: 'app-recipe-list',
-  templateUrl: './recipe-list.component.html',
-  styleUrls: ['./recipe-list.component.css']
+  selector: "app-recipe-list",
+  templateUrl: "./recipe-list.component.html",
+  styleUrls: ["./recipe-list.component.css"]
 })
 export class RecipeListComponent implements OnInit {
-  recipes: Recipe[] = [
-    new Recipe(
-      'Test Recipe',
-      'This is simply a test',
-      'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?cs=srgb&dl=burrito-chicken-close-up-461198.jpg&fm=jpg'
-    ),
-    new Recipe(
-      'Test Recipe2',
-      'This is simply a test 2',
-      'https://dynaimage.cdn.cnn.com/cnn/q_auto,w_981,c_fill,g_auto,h_552,ar_16:9/http%3A%2F%2Fcdn.cnn.com%2Fcnnnext%2Fdam%2Fassets%2F170517150325-food-general.jpg'
-    )
-  ];
+  recipes: Recipe[] = [];
+  // recipes: Recipe[] = [
+  //   new Recipe(
+  //     'Test Recipe',
+  //     'This is simply a test',
+  //     'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?cs=srgb&dl=burrito-chicken-close-up-461198.jpg&fm=jpg'
+  //   ),
+  //   new Recipe(
+  //     'Test Recipe2',
+  //     'This is simply a test 2',
+  //     'https://dynaimage.cdn.cnn.com/cnn/q_auto,w_981,c_fill,g_auto,h_552,ar_16:9/http%3A%2F%2Fcdn.cnn.com%2Fcnnnext%2Fdam%2Fassets%2F170517150325-food-general.jpg'
+  //   )
+  // ];
 
-  @Output('onRecipeSelected') onRecipeSelected2 = new EventEmitter<Recipe>();
+  // @Output("onRecipeSelected") onRecipeSelected2 = new EventEmitter<Recipe>();
 
-  constructor() {}
+  constructor(private recipeService: RecipeService) {}
 
-  ngOnInit() {}
-
-  onRecipeSelected(recipe: Recipe) {
-    this.onRecipeSelected2.emit(recipe);
+  ngOnInit() {
+    this.recipes = this.recipeService.getRecipes();
   }
+
+  // onRecipeSelected(recipe: Recipe) {
+  //   this.onRecipeSelected2.emit(recipe);
+  // }
 }

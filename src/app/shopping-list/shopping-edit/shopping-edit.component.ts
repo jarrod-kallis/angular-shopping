@@ -32,11 +32,11 @@ export class ShoppingEditComponent implements OnInit {
     //     this.amountInputRef.nativeElement.value
     //   )
     // );
-    this.shoppingListService.onIngredientAdded(
+    this.shoppingListService.onIngredientsAdded([
       new Ingredient(
         this.nameInputRef.nativeElement.value,
         this.amountInputRef.nativeElement.value
       )
-    );
+    ]);
   }
 }

@@ -16,8 +16,9 @@ export class ShoppingListService implements OnInit {
     return this.ingredients.slice();
   }
 
-  public onIngredientAdded(ingredient: Ingredient) {
-    this.ingredients.push(ingredient);
+  public onIngredientsAdded(ingredients: Ingredient[]) {
+    // this.ingredients.push(...ingredients);
+    this.ingredients = this.ingredients.concat(ingredients);
     this.onIngredientsChangedEvent.emit(this.getIngredients());
   }
 }

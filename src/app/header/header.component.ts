@@ -1,23 +1,23 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  selector: "app-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.css"]
 })
 export class HeaderComponent implements OnInit {
-  @Output() onNavigatedToRecipes = new EventEmitter<null>();
-  @Output() onNavigatedToShoppingList = new EventEmitter<null>();
+  // @Output() onNavigatedToRecipes = new EventEmitter<null>();
+  // @Output() onNavigatedToShoppingList = new EventEmitter<null>();
 
   constructor() {}
 
   ngOnInit() {}
 
-  onNavigateToRecipes() {
-    this.onNavigatedToRecipes.emit();
-  }
+  // onNavigateToRecipes() {
+  //   this.onNavigatedToRecipes.emit();
+  // }
 
-  onNavigateToShoppingList() {
-    this.onNavigatedToShoppingList.emit();
-  }
+  // onNavigateToShoppingList() {
+  //   this.onNavigatedToShoppingList.emit();
+  // }
 }

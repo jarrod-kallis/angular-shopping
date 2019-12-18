@@ -1,14 +1,16 @@
-<app-header
+<!-- <app-header
   (onNavigatedToRecipes)="onNavigatedToRecipes()"
   (onNavigatedToShoppingList)="onNavigatedToShoppingList()"
-></app-header>
+></app-header> -->
+<app-header></app-header>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <app-recipes *ngIf="selectedMenuItem === RECIPES_MENU_ITEM"></app-recipes>
+      <router-outlet></router-outlet>
+      <!-- <app-recipes *ngIf="selectedMenuItem === RECIPES_MENU_ITEM"></app-recipes>
       <app-shopping-list
         *ngIf="selectedMenuItem === SHOPPING_LIST_MENU_ITEM"
-      ></app-shopping-list>
+      ></app-shopping-list> -->
     </div>
   </div>
 </div>

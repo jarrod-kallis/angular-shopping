@@ -3,3 +3,7 @@
 hr {
   border-color: darkgray;
 }
+
+a {
+  cursor: pointer;
+}

@@ -1,1 +1,7 @@
-<p>recipe-edit works!</p>
+<form [formGroup]="recipeFormGroup" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Name</label>
+    <input formControlName="name" />
+  </div>
+  <button type="submit">Save</button>
+</form>

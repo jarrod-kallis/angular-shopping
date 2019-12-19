@@ -3,6 +3,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 
 import { Recipe } from "../recipe.model";
 import { RecipeService } from "../../shared/services/recipe.service";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-recipe-edit",
@@ -11,6 +12,7 @@ import { RecipeService } from "../../shared/services/recipe.service";
 })
 export class RecipeEditComponent implements OnInit {
   recipe: Recipe;
+  recipeFormGroup: FormGroup;
 
   constructor(
     private recipeService: RecipeService,
@@ -27,5 +29,18 @@ export class RecipeEditComponent implements OnInit {
         this.recipe = this.recipeService.getRecipe(+params["id"]);
       }
     });
+
+    this.recipeFormGroup = new FormGroup({
+      name: new FormControl(this.recipe.name, Validators.required),
+      description: new FormControl(
+        this.recipe.description,
+        Validators.required
+      ),
+      imagePath: new FormControl(this.recipe.imagePath, Validators.required)
+    });
+  }
+
+  onSubmit() {
+    console.log(this.recipeFormGroup.value);
   }
 }

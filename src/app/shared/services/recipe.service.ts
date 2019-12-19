@@ -1,4 +1,4 @@
-import { EventEmitter } from "@angular/core";
+// import { Subject } from "rxjs";
 
 import { Recipe } from "../../recipes/recipe.model";
 import { Ingredient } from "../ingredient.model";
@@ -21,7 +21,7 @@ export class RecipeService {
 
   // selectedRecipe: Recipe;
 
-  onRecipeSelectedEvent = new EventEmitter<Recipe>();
+  // onRecipeSelectedEvent = new Subject<Recipe>();
 
   getRecipes() {
     // Create a copy of the recipes array
@@ -32,8 +32,8 @@ export class RecipeService {
     return this.getRecipes()[id];
   }
 
-  onRecipeSelected(recipe: Recipe) {
-    // this.selectedRecipe = recipe;
-    this.onRecipeSelectedEvent.emit(recipe);
-  }
+  // onRecipeSelected(recipe: Recipe) {
+  //   // this.selectedRecipe = recipe;
+  //   this.onRecipeSelectedEvent.next(recipe);
+  // }
 }

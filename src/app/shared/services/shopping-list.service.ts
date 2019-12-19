@@ -1,4 +1,5 @@
-import { OnInit, EventEmitter } from "@angular/core";
+import { OnInit } from "@angular/core";
+import { Subject } from "rxjs";
 
 import { Ingredient } from "../ingredient.model";
 
@@ -8,7 +9,7 @@ export class ShoppingListService implements OnInit {
     new Ingredient("Tomatoes", 10)
   ];
 
-  public onIngredientsChangedEvent = new EventEmitter<Ingredient[]>();
+  public onIngredientsChangedEvent = new Subject<Ingredient[]>();
 
   ngOnInit() {}
 
@@ -19,6 +20,6 @@ export class ShoppingListService implements OnInit {
   public addIngredients(ingredients: Ingredient[]) {
     // this.ingredients.push(...ingredients);
     this.ingredients = this.ingredients.concat(ingredients);
-    this.onIngredientsChangedEvent.emit(this.getIngredients());
+    this.onIngredientsChangedEvent.next(this.getIngredients());
   }
 }

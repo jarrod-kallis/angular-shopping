@@ -39,7 +39,6 @@ export class ShoppingListService implements OnInit {
       }
     });
 
-    console.log(currentIngredients);
     this.ingredients = currentIngredients;
 
     // this.ingredients.push(...ingredients);

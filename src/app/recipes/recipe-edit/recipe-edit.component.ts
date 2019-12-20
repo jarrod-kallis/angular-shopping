@@ -69,10 +69,14 @@ export class RecipeEditComponent implements OnInit {
 
     if (this.editMode) {
       this.recipeService.updateRecipe(this.recipeIdx, recipe);
+      this.router.navigate(["../"], { relativeTo: this.route });
     } else {
-      this.recipeService.addRecipe(recipe);
+      const newRecipeIdx = this.recipeService.addRecipe(recipe);
+      this.router.navigate(["../", newRecipeIdx], { relativeTo: this.route });
     }
+  }
 
+  onCancel() {
     this.router.navigate(["../"], { relativeTo: this.route });
   }
 
@@ -114,5 +118,9 @@ export class RecipeEditComponent implements OnInit {
 
   onAddNewIngredientClick() {
     this.ingredientsFormArray.push(this.createIngredientFormGroup("", 0));
+  }
+
+  deleteIngredient(ingredientIdx: number) {
+    this.ingredientsFormArray.removeAt(ingredientIdx);
   }
 }

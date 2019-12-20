@@ -40,17 +40,27 @@ export class RecipeService {
   //   this.onRecipeSelectedEvent.next(recipe);
   // }
 
-  addRecipe(recipe: Recipe) {
+  addRecipe(recipe: Recipe): number {
     const recipes: Recipe[] = this.getRecipes();
-    recipes.push(recipe);
+    const recipeIdx: number = recipes.push(recipe) - 1;
 
     this.recipes = recipes;
     this.onRecipesChangedEvent.next(this.getRecipes());
+
+    return recipeIdx;
   }
 
   updateRecipe(recipeIdx: number, recipe: Recipe) {
     const recipes: Recipe[] = this.getRecipes();
     recipes[recipeIdx] = recipe;
+
+    this.recipes = recipes;
+    this.onRecipesChangedEvent.next(this.getRecipes());
+  }
+
+  deleteRecipe(recipeIdx: number) {
+    const recipes: Recipe[] = this.getRecipes();
+    recipes.splice(recipeIdx, 1);
 
     this.recipes = recipes;
     this.onRecipesChangedEvent.next(this.getRecipes());

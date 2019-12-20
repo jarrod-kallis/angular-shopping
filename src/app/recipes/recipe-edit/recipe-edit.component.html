@@ -1,7 +1,100 @@
-<form [formGroup]="recipeFormGroup" (ngSubmit)="onSubmit()">
-  <div>
-    <label>Name</label>
-    <input formControlName="name" />
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="recipeFormGroup" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            formControlName="name"
+          />
+          <p *ngIf="displayNameValidationError()" class="help-block">
+            Please enter the name
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label for="imagePath">Image URL</label>
+          <input
+            type="text"
+            id="imagePath"
+            class="form-control"
+            formControlName="imagePath"
+          />
+          <p *ngIf="displayImagePathValidationError()" class="help-block">
+            Please enter the image URL
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <img [src]="recipeFormGroup.value.imagePath" class="img-responsive" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label for="description">Description</label>
+          <textarea
+            rows="3"
+            id="description"
+            class="form-control"
+            formControlName="description"
+          ></textarea>
+          <p *ngIf="displayDescriptionValidationError()" class="help-block">
+            Please enter the description
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 form-group" formArrayName="ingredients">
+          <label>Ingredients</label>
+          <div
+            class="row form-group"
+            *ngFor="let ingredientControl of ingredientControls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="col-xs-8">
+              <input type="text" class="form-control" formControlName="name" />
+            </div>
+            <div class="col-xs-2">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="amount"
+              />
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-danger" type="button">X</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12 form-group">
+              <button
+                class="btn btn-success"
+                type="button"
+                (click)="onAddNewIngredientClick()"
+              >
+                Add New Ingredient
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 btn-toolbar">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!recipeFormGroup.valid"
+          >
+            Save
+          </button>
+          <button type="button" class="btn btn-danger">Cancel</button>
+        </div>
+      </div>
+    </form>
   </div>
-  <button type="submit">Save</button>
-</form>
+</div>

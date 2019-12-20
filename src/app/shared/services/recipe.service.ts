@@ -2,6 +2,7 @@
 
 import { Recipe } from "../../recipes/recipe.model";
 import { Ingredient } from "../ingredient.model";
+import { Subject } from "rxjs";
 
 export class RecipeService {
   private recipes: Recipe[] = [
@@ -23,6 +24,8 @@ export class RecipeService {
 
   // onRecipeSelectedEvent = new Subject<Recipe>();
 
+  onRecipesChangedEvent = new Subject<Recipe[]>();
+
   getRecipes() {
     // Create a copy of the recipes array
     return this.recipes.slice();
@@ -36,4 +39,20 @@ export class RecipeService {
   //   // this.selectedRecipe = recipe;
   //   this.onRecipeSelectedEvent.next(recipe);
   // }
+
+  addRecipe(recipe: Recipe) {
+    const recipes: Recipe[] = this.getRecipes();
+    recipes.push(recipe);
+
+    this.recipes = recipes;
+    this.onRecipesChangedEvent.next(this.getRecipes());
+  }
+
+  updateRecipe(recipeIdx: number, recipe: Recipe) {
+    const recipes: Recipe[] = this.getRecipes();
+    recipes[recipeIdx] = recipe;
+
+    this.recipes = recipes;
+    this.onRecipesChangedEvent.next(this.getRecipes());
+  }
 }

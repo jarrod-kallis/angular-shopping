@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  OnDestroy
-} from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 
 import { Ingredient } from "src/app/shared/ingredient.model";
 import { ShoppingListService } from "src/app/shared/services/shopping-list.service";
@@ -86,10 +80,14 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   clearForm() {
     this.selectedIngredient = new Ingredient("", 0);
     this.editMode = false;
-    this.shoppingListForm.reset();
+    this.shoppingListForm.reset({ amount: 0 });
   }
 
   onDelete() {
     this.shoppingListService.deleteIngredient(this.selectedIngredient);
+  }
+
+  getIngredientAmountPattern() {
+    return Ingredient.INGREGIENT_AMOUNT_PATTERN;
   }
 }

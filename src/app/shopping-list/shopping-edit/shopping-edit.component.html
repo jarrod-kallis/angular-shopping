@@ -15,7 +15,9 @@
             required
             [ngModel]="selectedIngredient.name"
           />
-          <p *ngIf="!name.valid && name.touched">Please enter the name</p>
+          <p *ngIf="!name.valid && name.touched" class="help-block">
+            Please enter the name
+          </p>
         </div>
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
@@ -29,10 +31,10 @@
             #amount="ngModel"
             required
             [min]="1"
-            pattern="^[1-9]+[0-9]*$"
+            [pattern]="getIngredientAmountPattern()"
             [ngModel]="selectedIngredient.amount"
           />
-          <p *ngIf="!amount.valid && amount.touched">
+          <p *ngIf="!amount.valid && amount.touched" class="help-block">
             Please enter an amount greater than 0
           </p>
         </div>

@@ -2,6 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CustomFormsModule } from "ng2-validation";
+import { HttpClientModule } from "@angular/common/http";
 
 import { AppComponent } from "./app.component";
 import { HeaderComponent } from "./header/header.component";
@@ -37,7 +38,8 @@ import { RecipeService } from "./shared/services/recipe.service";
     FormsModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    CustomFormsModule
+    CustomFormsModule,
+    HttpClientModule
   ],
   providers: [RecipeService, ShoppingListService],
   bootstrap: [AppComponent]

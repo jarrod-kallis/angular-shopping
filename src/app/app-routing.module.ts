@@ -7,9 +7,11 @@ import { RecipeDetailComponent } from "./recipes/recipe-detail/recipe-detail.com
 import { NoRecipeSelectedComponent } from "./recipes/no-recipe-selected/no-recipe-selected.component";
 import { RecipeEditComponent } from "./recipes/recipe-edit/recipe-edit.component";
 import { RecipesResolverService } from "./shared/services/recipes-resolver.service";
+import { AuthenticationComponent } from './authentication/authentication.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "recipes", pathMatch: "full" },
+  { path: "login", component: AuthenticationComponent },
   {
     path: "recipes",
     component: RecipesComponent,
@@ -35,4 +37,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

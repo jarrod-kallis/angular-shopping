@@ -10,8 +10,8 @@
         <li>
           <a href="#" (click)="onNavigateToShoppingList()">Shopping List</a>
         </li> -->
-        <li routerLinkActive="active"><a routerLink="/recipes">Recipes</a></li>
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="isAuthenticated"><a routerLink="/recipes">Recipes</a></li>
+        <li routerLinkActive="active" *ngIf="!isAuthenticated">
           <a routerLink="/login">Login</a>
         </li>
         <li routerLinkActive="active">
@@ -19,15 +19,18 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown" appDropdown>
-          <a class="dropdown-toggle" role="button">
-            Manage <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a (click)="saveData()">Save Data</a></li>
-            <li><a (click)="fetchData()">Fetch Data</a></li>
-          </ul>
-        </li>
+        <ng-template [ngIf]="isAuthenticated">
+          <li><a (click)="logout()">Logout</a></li>
+          <li class="dropdown" appDropdown>
+            <a class="dropdown-toggle" role="button">
+              Manage <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a (click)="saveData()">Save Data</a></li>
+              <li><a (click)="fetchData()">Fetch Data</a></li>
+            </ul>
+          </li>
+        </ng-template>
       </ul>
     </div>
   </div>

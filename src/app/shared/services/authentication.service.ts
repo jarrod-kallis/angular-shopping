@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
-import { throwError, Observable, Subject } from 'rxjs';
+import { throwError, Observable, BehaviorSubject } from 'rxjs';
 
 import { AuthenticationResponse } from '../models/authentication-response.model';
 import { User } from '../models/user.model';
@@ -15,7 +15,8 @@ export class AuthenticationService {
     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + AuthenticationService.API_KEY;
   private static LOGIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + AuthenticationService.API_KEY;
 
-  currentUserChangedEvent = new Subject<User>();
+  // BehaviorSubject: Works the same as a Subject except that you can subscribe after the values have been emitted and still get them.
+  currentUserChangedEvent = new BehaviorSubject<User>(null);
 
   constructor(private http: HttpClient) { }
 
@@ -29,6 +30,10 @@ export class AuthenticationService {
     result = this.exhanceSignUpAndLogin(result);
 
     return result;
+  }
+
+  logout() {
+    this.currentUserChangedEvent.next(null);
   }
 
   private exhanceSignUpAndLogin(response: Observable<AuthenticationResponse>): Observable<AuthenticationResponse> {

@@ -6,6 +6,7 @@ import { AuthenticationMode } from '../shared/constants/AuthenticationMode';
 import { AuthenticationService } from '../shared/services/authentication.service';
 import { AuthenticationResponse } from '../shared/models/authentication-response.model';
 import { User } from '../shared/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authentication',
@@ -20,7 +21,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
 
   currentUserChangedSubscription: Subscription;
 
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(private authenticationService: AuthenticationService, private router: Router) { }
 
   ngOnInit() {
     this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
@@ -102,13 +103,10 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     authenticationObservable.subscribe((response: AuthenticationResponse) => {
       this.errorMsg = "";
       this.isBusy = false;
-      console.log(response);
+
+      this.router.navigate(['/recipes']);
     }, errorMessage => {
       this.errorMsg = errorMessage;
-      this.isBusy = false;
-      console.log(errorMessage);
-    }, () => {
-      this.errorMsg = "";
       this.isBusy = false;
     });
   }

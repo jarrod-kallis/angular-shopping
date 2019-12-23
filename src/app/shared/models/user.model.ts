@@ -38,4 +38,8 @@ export class User {
 
     return this._token;
   }
+
+  public hasValidToken(): boolean {
+    return this.token !== null;
+  }
 }

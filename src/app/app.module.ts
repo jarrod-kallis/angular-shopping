@@ -2,7 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CustomFormsModule } from "ng2-validation";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { AppComponent } from "./app.component";
 import { HeaderComponent } from "./header/header.component";
@@ -22,6 +22,7 @@ import { AuthenticationComponent } from './authentication/authentication.compone
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { ErrorComponent } from './shared/components/error/error.component';
 import { FormItemComponent } from './shared/components/form-item/form-item.component';
+import { AuthenticationInterceptorService } from './shared/services/authentication-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,15 @@ import { FormItemComponent } from './shared/components/form-item/form-item.compo
     CustomFormsModule,
     HttpClientModule
   ],
-  providers: [RecipeService, ShoppingListService],
+  providers: [
+    RecipeService,
+    ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

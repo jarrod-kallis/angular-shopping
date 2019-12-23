@@ -19,6 +19,9 @@ import { NoRecipeSelectedComponent } from "./recipes/no-recipe-selected/no-recip
 import { RecipeEditComponent } from "./recipes/recipe-edit/recipe-edit.component";
 import { RecipeService } from "./shared/services/recipe.service";
 import { AuthenticationComponent } from './authentication/authentication.component';
+import { LoadingComponent } from './shared/components/loading/loading.component';
+import { ErrorComponent } from './shared/components/error/error.component';
+import { FormItemComponent } from './shared/components/form-item/form-item.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,10 @@ import { AuthenticationComponent } from './authentication/authentication.compone
     DropdownDirective,
     NoRecipeSelectedComponent,
     RecipeEditComponent,
-    AuthenticationComponent
+    AuthenticationComponent,
+    LoadingComponent,
+    ErrorComponent,
+    FormItemComponent
   ],
   imports: [
     BrowserModule,

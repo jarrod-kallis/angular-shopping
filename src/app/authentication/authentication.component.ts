@@ -1,20 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthenticationMode } from '../shared/constants/AuthenticationMode';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription, Observable } from 'rxjs';
+
+import { AuthenticationMode } from '../shared/constants/AuthenticationMode';
+import { AuthenticationService } from '../shared/services/authentication.service';
+import { AuthenticationResponse } from '../shared/models/authentication-response.model';
+import { User } from '../shared/models/user.model';
 
 @Component({
   selector: 'app-authentication',
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.css']
 })
-export class AuthenticationComponent implements OnInit {
+export class AuthenticationComponent implements OnInit, OnDestroy {
   mode: AuthenticationMode = AuthenticationMode.Login;
   form: FormGroup;
+  errorMsg: string = "";
+  isBusy: boolean = false;
 
-  constructor() { }
+  currentUserChangedSubscription: Subscription;
+
+  constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit() {
+    this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
+      .subscribe((user: User) => console.log(user));
+
     this.buildFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.currentUserChangedSubscription.unsubscribe();
   }
 
   buildFormGroup(currentValues: any = {}) {
@@ -70,6 +86,30 @@ export class AuthenticationComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    const value: any = this.form.value;
+
+    let authenticationObservable: Observable<AuthenticationResponse>;
+
+    this.isBusy = true;
+    this.errorMsg = "";
+
+    if (this.mode === AuthenticationMode.SignUp) {
+      authenticationObservable = this.authenticationService.signUp(value.email, value.password);
+    } else if (this.mode === AuthenticationMode.Login) {
+      authenticationObservable = this.authenticationService.login(value.email, value.password);
+    }
+
+    authenticationObservable.subscribe((response: AuthenticationResponse) => {
+      this.errorMsg = "";
+      this.isBusy = false;
+      console.log(response);
+    }, errorMessage => {
+      this.errorMsg = errorMessage;
+      this.isBusy = false;
+      console.log(errorMessage);
+    }, () => {
+      this.errorMsg = "";
+      this.isBusy = false;
+    });
   }
 }

@@ -1,0 +1,6 @@
+<div [ngClass]="getClass()" [formGroup]="formGroup">
+  <label [for]="getInputId()">{{ label }}</label>
+  <input [type]="inputType" [id]="getInputId()" [name]="inputName" class="form-control" (change)="onChangeMade()"
+    [formControlName]="inputName" [autocomplete]="autocomplete" />
+  <ng-content></ng-content>
+</div>

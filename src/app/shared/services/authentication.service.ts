@@ -4,18 +4,18 @@ import { Router } from '@angular/router';
 import { map, catchError, tap } from 'rxjs/operators';
 import { throwError, Observable, BehaviorSubject } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import { AuthenticationResponse } from '../models/authentication-response.model';
 import { User } from '../models/user.model';
-import { PROJECT_STORAGE_USER_KEY } from '../constants/constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private static API_KEY: string = "AIzaSyDi1YBComW1RMSSyx9ye8vIMB2I6iZ9iAU";
   private static SIGNUP_URL: string =
-    "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + AuthenticationService.API_KEY;
-  private static LOGIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + AuthenticationService.API_KEY;
+    "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + environment.firebaseApiKey;
+  private static LOGIN_URL: string =
+    "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + environment.firebaseApiKey;
 
   // BehaviorSubject: Works the same as a Subject except that you can subscribe after the values have been emitted and still get them.
   currentUserChangedEvent = new BehaviorSubject<User>(null);
@@ -35,7 +35,7 @@ export class AuthenticationService {
   }
 
   autoLogin() {
-    const localStorageUser: string = localStorage.getItem(PROJECT_STORAGE_USER_KEY);
+    const localStorageUser: string = localStorage.getItem(environment.projectStorageUserKey);
 
     if (localStorageUser) {
       const user: User = User.convertFromLocalStorage(localStorageUser);

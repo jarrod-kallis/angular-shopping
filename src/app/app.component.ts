@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, ComponentFactoryResolver, ComponentFactor
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
+import { environment } from '../environments/environment';
 import { AuthenticationService } from './shared/services/authentication.service';
 import { User } from './shared/models/user.model';
-import { PROJECT_STORAGE_USER_KEY, AUTO_LOGOUT_WARNING_SECONDS } from './shared/constants/constants';
 import { ModalComponent } from './shared/components/modal/modal.component';
 import { DynamicComponentPlaceholderDirective } from './shared/directives/dynamic-component-placeholder.directive';
 
@@ -47,13 +47,13 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe((user: User) => {
         if (user) {
-          localStorage.setItem(PROJECT_STORAGE_USER_KEY, JSON.stringify(user));
+          localStorage.setItem(environment.projectStorageUserKey, JSON.stringify(user));
 
           const userTokenExpirationDurationInSeconds: number = Math.trunc(user.getTokenExpirationDuration() / 1000);
 
-          this.autoLogoutSeconds = AUTO_LOGOUT_WARNING_SECONDS > userTokenExpirationDurationInSeconds
+          this.autoLogoutSeconds = environment.autoLogoutWarningSeconds > userTokenExpirationDurationInSeconds
             ? userTokenExpirationDurationInSeconds
-            : AUTO_LOGOUT_WARNING_SECONDS;
+            : environment.autoLogoutWarningSeconds;
 
           console.log(userTokenExpirationDurationInSeconds);
 
@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
             this.sendAutoLogoutWarning(this.autoLogoutSeconds);
           }, user.getTokenExpirationDuration() - (this.autoLogoutSeconds * 1000));
         } else {
-          localStorage.removeItem(PROJECT_STORAGE_USER_KEY);
+          localStorage.removeItem(environment.projectStorageUserKey);
           this.removeAutoLogoutWarning();
 
           if (this.logoutUserTimer) {

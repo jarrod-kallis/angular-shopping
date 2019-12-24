@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ComponentFactoryResolver, ComponentFactory, ViewChild, ViewContainerRef, ComponentRef, TemplateRef, Injector } from "@angular/core";
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
 import { AuthenticationService } from './shared/services/authentication.service';
 import { User } from './shared/models/user.model';
 import { PROJECT_STORAGE_USER_KEY, AUTO_LOGOUT_WARNING_SECONDS } from './shared/constants/constants';
+import { ModalComponent } from './shared/components/modal/modal.component';
+import { DynamicComponentPlaceholderDirective } from './shared/directives/dynamic-component-placeholder.directive';
 
 @Component({
   selector: "app-root",
@@ -22,16 +24,20 @@ export class AppComponent implements OnInit, OnDestroy {
   //   this.selectedMenuItem = this.SHOPPING_LIST_MENU_ITEM;
   // }
 
+  @ViewChild(DynamicComponentPlaceholderDirective) autoLogoutModalSpot: DynamicComponentPlaceholderDirective;
+  @ViewChild('autoLogoutModalContentTemplate') autoLogoutModalContentTemplate: TemplateRef<any>;
+
   showAutoLogoutWarning: boolean = false;
   autoLogoutSeconds: number;
+
+  private autoLogoutModalCloseSubscription: Subscription;
 
   private currentUserChangedSubscription: Subscription;
   private logoutUserTimer: NodeJS.Timer;
   private autoLogoutUserTimer: NodeJS.Timer;
   private autoLogoutSecondsCountDownTimer: NodeJS.Timer;
 
-
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(private authenticationService: AuthenticationService, private componentFactoryResolver: ComponentFactoryResolver, private injector: Injector) { }
 
   ngOnInit() {
     // This handles all the logic around logging in & out automatically based on local storage & a timer
@@ -48,6 +54,8 @@ export class AppComponent implements OnInit, OnDestroy {
           this.autoLogoutSeconds = AUTO_LOGOUT_WARNING_SECONDS > userTokenExpirationDurationInSeconds
             ? userTokenExpirationDurationInSeconds
             : AUTO_LOGOUT_WARNING_SECONDS;
+
+          console.log(userTokenExpirationDurationInSeconds);
 
           this.logoutUserTimer = setTimeout(() => {
             this.authenticationService.logout();
@@ -79,11 +87,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.currentUserChangedSubscription.unsubscribe();
+
+    if (this.autoLogoutModalCloseSubscription) {
+      this.autoLogoutModalCloseSubscription.unsubscribe();
+    }
   }
 
   sendAutoLogoutWarning(secondsRemaining: number) {
     console.log(secondsRemaining + ' seconds remaining');
     this.showAutoLogoutWarning = true;
+    // this.createAutoLogoutModal();
 
     this.autoLogoutSecondsCountDownTimer = setInterval(() => this.autoLogoutSeconds -= 1, 1000);
   }
@@ -98,5 +111,25 @@ export class AppComponent implements OnInit, OnDestroy {
       clearInterval(this.autoLogoutSecondsCountDownTimer);
       this.autoLogoutSecondsCountDownTimer = null;
     }
+  }
+
+  private createAutoLogoutModal() {
+    const modalComponentFactory: ComponentFactory<ModalComponent> = this.componentFactoryResolver.resolveComponentFactory(ModalComponent);
+
+    const viewContainerRef: ViewContainerRef = this.autoLogoutModalSpot.viewContainerRef;
+    viewContainerRef.clear();
+
+    // Creates the content inside the ng-template
+    const contentRef = this.autoLogoutModalContentTemplate.createEmbeddedView({});
+
+    const modalComponentRef: ComponentRef<ModalComponent> = viewContainerRef.createComponent(modalComponentFactory, 0, null, [contentRef.rootNodes]);
+    const modalComponentInstance: ModalComponent = modalComponentRef.instance;
+
+    modalComponentInstance.title = "Auto Logout Warning";
+    this.autoLogoutModalCloseSubscription = modalComponentInstance.onCancelled.subscribe(() => {
+      this.removeAutoLogoutWarning();
+      viewContainerRef.clear();
+      this.autoLogoutModalCloseSubscription.unsubscribe();
+    });
   }
 }

@@ -4,6 +4,15 @@
     You will be logged out in {{autoLogoutSeconds}} {{autoLogoutSeconds > 1 ? 'seconds' : 'second'}}
   </p>
 </app-modal>
+
+<!-- Trying to create a component programmatically. The issue was trying to use string interpolation -->
+<!-- <ng-template appDynamicComponentPlaceholder></ng-template>
+<ng-template #autoLogoutModalContentTemplate>
+  <p>
+    You will be logged out in {{autoLogoutSeconds}} {{autoLogoutSeconds > 1 ? 'seconds' : 'second'}}
+  </p>
+</ng-template> -->
+
 <!-- <app-header
   (onNavigatedToRecipes)="onNavigatedToRecipes()"
   (onNavigatedToShoppingList)="onNavigatedToShoppingList()"

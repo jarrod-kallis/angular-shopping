@@ -25,6 +25,7 @@ import { FormItemComponent } from './shared/components/form-item/form-item.compo
 import { AuthenticationInterceptorService } from './shared/services/authentication-interceptor.service';
 import { ModalComponent } from './shared/components/modal/modal.component';
 import { BackdropComponent } from './shared/components/backdrop/backdrop.component';
+import { DynamicComponentPlaceholderDirective } from './shared/directives/dynamic-component-placeholder.directive';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { BackdropComponent } from './shared/components/backdrop/backdrop.compone
     ErrorComponent,
     FormItemComponent,
     ModalComponent,
-    BackdropComponent
+    BackdropComponent,
+    DynamicComponentPlaceholderDirective
   ],
   imports: [
     BrowserModule,
@@ -63,6 +65,7 @@ import { BackdropComponent } from './shared/components/backdrop/backdrop.compone
       multi: true
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalComponent] // Programmatically created components
 })
 export class AppModule { }

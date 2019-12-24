@@ -1,37 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
-import { AuthenticationMode } from '../shared/constants/AuthenticationMode';
+import { AuthenticationMode } from '../shared/constants/authentication-mode';
 import { AuthenticationService } from '../shared/services/authentication.service';
 import { AuthenticationResponse } from '../shared/models/authentication-response.model';
-import { User } from '../shared/models/user.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authentication',
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.css']
 })
-export class AuthenticationComponent implements OnInit, OnDestroy {
+export class AuthenticationComponent implements OnInit {
   mode: AuthenticationMode = AuthenticationMode.Login;
   form: FormGroup;
   errorMsg: string = "";
   isBusy: boolean = false;
 
-  currentUserChangedSubscription: Subscription;
-
   constructor(private authenticationService: AuthenticationService, private router: Router) { }
 
   ngOnInit() {
-    this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
-      .subscribe((user: User) => console.log(user));
-
     this.buildFormGroup();
-  }
-
-  ngOnDestroy() {
-    this.currentUserChangedSubscription.unsubscribe();
   }
 
   buildFormGroup(currentValues: any = {}) {
@@ -104,7 +94,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       this.errorMsg = "";
       this.isBusy = false;
 
-      this.router.navigate(['/recipes']);
+      this.router.navigate(["recipes"]);
     }, errorMessage => {
       this.errorMsg = errorMessage;
       this.isBusy = false;

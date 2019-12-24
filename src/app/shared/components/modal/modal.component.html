@@ -1,0 +1,21 @@
+<div class="container">
+  <header class="title">
+    <h1>{{ title }}</h1>
+  </header>
+  <section class="content">
+    <ng-content></ng-content>
+  </section>
+  <footer class="footer">
+    <button
+      *ngIf="btnConfirmTitle"
+      class="btn btn-default"
+      (click)="onSubmitClick()"
+    >
+      {{ btnConfirmTitle }}
+    </button>
+    <button class="btn btn-default" (click)="onCancelClick()">
+      {{ btnCancelTitle }}
+    </button>
+  </footer>
+</div>
+<app-backdrop (onClicked)="onCancelClick()"></app-backdrop>

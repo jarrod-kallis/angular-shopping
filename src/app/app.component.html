@@ -1,3 +1,9 @@
+<app-modal *ngIf="showAutoLogoutWarning" title="Auto Logout Warning" (onCancelled)="removeAutoLogoutWarning()"
+  btnCancelTitle="Fine!">
+  <p>
+    You will be logged out in {{autoLogoutSeconds}} {{autoLogoutSeconds > 1 ? 'seconds' : 'second'}}
+  </p>
+</app-modal>
 <!-- <app-header
   (onNavigatedToRecipes)="onNavigatedToRecipes()"
   (onNavigatedToShoppingList)="onNavigatedToShoppingList()"

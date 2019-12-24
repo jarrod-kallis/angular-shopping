@@ -23,6 +23,8 @@ import { LoadingComponent } from './shared/components/loading/loading.component'
 import { ErrorComponent } from './shared/components/error/error.component';
 import { FormItemComponent } from './shared/components/form-item/form-item.component';
 import { AuthenticationInterceptorService } from './shared/services/authentication-interceptor.service';
+import { ModalComponent } from './shared/components/modal/modal.component';
+import { BackdropComponent } from './shared/components/backdrop/backdrop.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { AuthenticationInterceptorService } from './shared/services/authenticati
     AuthenticationComponent,
     LoadingComponent,
     ErrorComponent,
-    FormItemComponent
+    FormItemComponent,
+    ModalComponent,
+    BackdropComponent
   ],
   imports: [
     BrowserModule,

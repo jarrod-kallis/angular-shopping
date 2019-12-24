@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { map, catchError, tap } from 'rxjs/operators';
 import { throwError, Observable, BehaviorSubject } from 'rxjs';
 
 import { AuthenticationResponse } from '../models/authentication-response.model';
 import { User } from '../models/user.model';
+import { PROJECT_STORAGE_USER_KEY } from '../constants/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,7 @@ export class AuthenticationService {
   // BehaviorSubject: Works the same as a Subject except that you can subscribe after the values have been emitted and still get them.
   currentUserChangedEvent = new BehaviorSubject<User>(null);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   signUp(email: string, password: string): Observable<AuthenticationResponse> {
     return this.exhanceSignUpAndLogin(this.http.post<AuthenticationResponse>(AuthenticationService.SIGNUP_URL, { email, password, returnSecureToken: true }));
@@ -32,8 +34,18 @@ export class AuthenticationService {
     return result;
   }
 
+  autoLogin() {
+    const localStorageUser: string = localStorage.getItem(PROJECT_STORAGE_USER_KEY);
+
+    if (localStorageUser) {
+      const user: User = User.convertFromLocalStorage(localStorageUser);
+      this.currentUserChangedEvent.next(user.hasValidToken() ? user : null);
+    }
+  }
+
   logout() {
     this.currentUserChangedEvent.next(null);
+    this.router.navigate(["login"]);
   }
 
   private exhanceSignUpAndLogin(response: Observable<AuthenticationResponse>): Observable<AuthenticationResponse> {

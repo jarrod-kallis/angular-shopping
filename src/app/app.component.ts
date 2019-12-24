@@ -43,11 +43,16 @@ export class AppComponent implements OnInit, OnDestroy {
         if (user) {
           localStorage.setItem(PROJECT_STORAGE_USER_KEY, JSON.stringify(user));
 
-          this.autoLogoutSeconds = AUTO_LOGOUT_WARNING_SECONDS;
+          const userTokenExpirationDurationInSeconds: number = Math.trunc(user.getTokenExpirationDuration() / 1000);
 
-          console.log(user.getTokenExpirationDuration());
+          this.autoLogoutSeconds = AUTO_LOGOUT_WARNING_SECONDS > userTokenExpirationDurationInSeconds
+            ? userTokenExpirationDurationInSeconds
+            : AUTO_LOGOUT_WARNING_SECONDS;
 
-          this.logoutUserTimer = setTimeout(() => { this.authenticationService.logout(); }, user.getTokenExpirationDuration());
+          this.logoutUserTimer = setTimeout(() => {
+            this.authenticationService.logout();
+          }, user.getTokenExpirationDuration());
+
           this.autoLogoutUserTimer = setTimeout(() => {
             this.sendAutoLogoutWarning(this.autoLogoutSeconds);
           }, user.getTokenExpirationDuration() - (this.autoLogoutSeconds * 1000));

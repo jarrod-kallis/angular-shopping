@@ -8,6 +8,8 @@ import { HeaderComponent } from "./header/header.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { SharedModule } from './shared/shared.module';
 import { ProvidersModule } from './providers.module';
+import { StoreModule } from '@ngrx/store';
+import { appReducer } from './store/app.reducer';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { ProvidersModule } from './providers.module';
     CustomFormsModule,
     HttpClientModule,
     SharedModule,
-    ProvidersModule
+    ProvidersModule,
+    StoreModule.forRoot(appReducer)
   ],
   bootstrap: [AppComponent]
 })

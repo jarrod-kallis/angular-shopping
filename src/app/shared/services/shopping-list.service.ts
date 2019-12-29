@@ -3,16 +3,18 @@ import { Subject } from "rxjs";
 
 import { Ingredient } from "../ingredient.model";
 
-export class ShoppingListService implements OnInit {
-  private ingredients: Ingredient[] = [
-    new Ingredient("Apples", 5),
-    new Ingredient("Tomatoes", 10)
-  ];
+// Replaced by Redux (ngRx)
+/*export*/ class ShoppingListService implements OnInit {
+  private ingredients: Ingredient[] = [];
+  // [
+  //   new Ingredient("Apples", 5),
+  //   new Ingredient("Tomatoes", 10)
+  // ];
 
   public onIngredientsChangedEvent = new Subject<Ingredient[]>();
   public onIngredientSelectedEvent = new Subject<Ingredient>();
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public getIngredients() {
     return this.ingredients.slice();

@@ -1,9 +1,13 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 
 import { DataStorageService } from "../shared/services/data-storage.service";
 import { AuthenticationService } from '../shared/services/authentication.service';
 import { User } from '../shared/models/user.model';
+import { AppState } from '../store/app.reducer';
+import { State } from '../authentication/store/authentication.reducer';
 
 @Component({
   selector: "app-header",
@@ -18,10 +22,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isAuthenticated: boolean = false;
 
-  constructor(private dataStorageService: DataStorageService, private authenticationService: AuthenticationService) { }
+  constructor(
+    private dataStorageService: DataStorageService,
+    private authenticationService: AuthenticationService,
+    private store: Store<AppState>
+  ) { }
 
   ngOnInit() {
-    this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
+    // this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
+    this.store.select('authentication')
+      .pipe(map((authenticationState: State) => authenticationState.user))
       .subscribe((user: User) => this.isAuthenticated = user && user.hasValidToken())
   }
 

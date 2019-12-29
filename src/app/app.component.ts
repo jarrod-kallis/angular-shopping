@@ -1,12 +1,15 @@
-import { Component, OnInit, OnDestroy, ComponentFactoryResolver, ComponentFactory, ViewChild, ViewContainerRef, ComponentRef, TemplateRef, Injector } from "@angular/core";
+import { Component, OnInit, OnDestroy, ComponentFactoryResolver, ComponentFactory, ViewChild, ViewContainerRef, ComponentRef, TemplateRef } from "@angular/core";
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { environment } from '../environments/environment';
 import { AuthenticationService } from './shared/services/authentication.service';
 import { User } from './shared/models/user.model';
 import { ModalComponent } from './shared/components/modal/modal.component';
 import { DynamicComponentPlaceholderDirective } from './shared/directives/dynamic-component-placeholder.directive';
+import { AppState } from './store/app.reducer';
+import { State } from './authentication/store/authentication.reducer';
 
 @Component({
   selector: "app-root",
@@ -37,13 +40,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private autoLogoutUserTimer: NodeJS.Timer;
   private autoLogoutSecondsCountDownTimer: NodeJS.Timer;
 
-  constructor(private authenticationService: AuthenticationService, private componentFactoryResolver: ComponentFactoryResolver, private injector: Injector) { }
+  constructor(private authenticationService: AuthenticationService, private componentFactoryResolver: ComponentFactoryResolver, private store: Store<AppState>) { }
 
   ngOnInit() {
     // This handles all the logic around logging in & out automatically based on local storage & a timer
-    this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
+    // this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
+    this.currentUserChangedSubscription = this.store.select('authentication')
       .pipe(
-        skip(1) // Skips the initial null value that is emitted when the BehaviorSubject is first instantiated
+        skip(1), // Skips the initial null value that is emitted when the BehaviorSubject is first instantiated
+        map((authenticationState: State) => authenticationState.user)
       )
       .subscribe((user: User) => {
         if (user) {

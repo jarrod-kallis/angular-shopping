@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { AuthenticationMode } from '../shared/constants/authentication-mode';
 import { AuthenticationService } from '../shared/services/authentication.service';
 import { AuthenticationResponse } from '../shared/models/authentication-response.model';
+import { AppState } from '../store/app.reducer';
+import { LoginStart } from './store/authentication.actions';
+import { State } from './store/authentication.reducer';
 
 @Component({
   selector: 'app-authentication',
@@ -18,9 +22,20 @@ export class AuthenticationComponent implements OnInit {
   errorMsg: string = "";
   isBusy: boolean = false;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) { }
+  constructor(
+    private authenticationService: AuthenticationService,
+    private router: Router,
+    private store: Store<AppState>
+  ) { }
 
   ngOnInit() {
+    this.store.select('authentication').subscribe(
+      (authenticationState: State) => {
+        this.errorMsg = authenticationState.errorMessage;
+        this.isBusy = authenticationState.isBusy;
+      }
+    )
+
     this.buildFormGroup();
   }
 
@@ -87,17 +102,20 @@ export class AuthenticationComponent implements OnInit {
     if (this.mode === AuthenticationMode.SignUp) {
       authenticationObservable = this.authenticationService.signUp(value.email, value.password);
     } else if (this.mode === AuthenticationMode.Login) {
-      authenticationObservable = this.authenticationService.login(value.email, value.password);
+      // authenticationObservable = this.authenticationService.login(value.email, value.password);
+      this.store.dispatch(new LoginStart(value.email, value.password));
     }
 
-    authenticationObservable.subscribe((response: AuthenticationResponse) => {
-      this.errorMsg = "";
-      this.isBusy = false;
+    if (authenticationObservable) {
+      authenticationObservable.subscribe((response: AuthenticationResponse) => {
+        this.errorMsg = "";
+        this.isBusy = false;
 
-      this.router.navigate(["recipes"]);
-    }, errorMessage => {
-      this.errorMsg = errorMessage;
-      this.isBusy = false;
-    });
+        this.router.navigate(["recipes"]);
+      }, errorMessage => {
+        this.errorMsg = errorMessage;
+        this.isBusy = false;
+      });
+    }
   }
 }

@@ -9,7 +9,8 @@ import { environment } from '../../../environments/environment';
 import { AuthenticationResponse } from '../models/authentication-response.model';
 import { User } from '../models/user.model';
 import { AppState } from '../../store/app.reducer';
-import { Login, Logout } from '../../authentication/store/authentication.actions';
+import { LoginSuccess, Logout } from '../../authentication/store/authentication.actions';
+import { AuthenticationEffects } from '../../authentication/store/authentication.effects';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ import { Login, Logout } from '../../authentication/store/authentication.actions
 export class AuthenticationService {
   private static SIGNUP_URL: string =
     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + environment.firebaseApiKey;
-  private static LOGIN_URL: string =
-    "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + environment.firebaseApiKey;
+  // private static LOGIN_URL: string =
+  //   "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + environment.firebaseApiKey;
 
   // BehaviorSubject: Works the same as a Subject except that you can subscribe after the values have been emitted and still get them.
   // currentUserChangedEvent = new BehaviorSubject<User>(null);
@@ -30,7 +31,7 @@ export class AuthenticationService {
   }
 
   login(email: string, password: string): Observable<AuthenticationResponse> {
-    let result: Observable<AuthenticationResponse> = this.http.post<AuthenticationResponse>(AuthenticationService.LOGIN_URL, { email, password, returnSecureToken: true })
+    let result: Observable<AuthenticationResponse> = this.http.post<AuthenticationResponse>(AuthenticationEffects.LOGIN_URL, { email, password, returnSecureToken: true })
 
     result = this.exhanceSignUpAndLogin(result);
 
@@ -44,7 +45,7 @@ export class AuthenticationService {
       const user: User = User.convertFromLocalStorage(localStorageUser);
 
       // this.currentUserChangedEvent.next(user.hasValidToken() ? user : null);
-      this.store.dispatch(new Login(user));
+      this.store.dispatch(new LoginSuccess(user));
     }
   }
 
@@ -63,7 +64,7 @@ export class AuthenticationService {
           const user: User = new User(response.localId, response.email, response.idToken, +response.expiresIn);
 
           // this.currentUserChangedEvent.next(user);
-          this.store.dispatch(new Login(user));
+          this.store.dispatch(new LoginSuccess(user));
         }),
         catchError(errorResponse => {
           let errorMessage = errorResponse.message;

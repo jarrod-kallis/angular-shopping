@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import { AuthenticationService } from './authentication.service';
+// import { AuthenticationService } from './authentication.service';
 import { User } from '../models/user.model';
 import { AppState } from '../../store/app.reducer';
 import { State } from '../../authentication/store/authentication.reducer';
@@ -15,7 +15,7 @@ import { State } from '../../authentication/store/authentication.reducer';
 export class AuthenticationRouteGuardService implements CanActivate {
 
   constructor(
-    private authenticationService: AuthenticationService,
+    // private authenticationService: AuthenticationService,
     private router: Router,
     private store: Store<AppState>
   ) { }

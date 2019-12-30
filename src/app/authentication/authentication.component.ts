@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { AuthenticationMode } from '../shared/constants/authentication-mode';
-import { AuthenticationService } from '../shared/services/authentication.service';
-import { AuthenticationResponse } from '../shared/models/authentication-response.model';
+// import { AuthenticationService } from '../shared/services/authentication.service';
+// import { AuthenticationResponse } from '../shared/models/authentication-response.model';
 import { AppState } from '../store/app.reducer';
 import { LoginStart, SignUpStart } from './store/authentication.actions';
 import { State } from './store/authentication.reducer';
@@ -16,11 +16,13 @@ import { State } from './store/authentication.reducer';
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.css']
 })
-export class AuthenticationComponent implements OnInit {
+export class AuthenticationComponent implements OnInit, OnDestroy {
   mode: AuthenticationMode = AuthenticationMode.Login;
   form: FormGroup;
   errorMsg: string = "";
   isBusy: boolean = false;
+
+  private authenticationStateSubscription: Subscription;
 
   constructor(
     // private authenticationService: AuthenticationService,
@@ -30,7 +32,7 @@ export class AuthenticationComponent implements OnInit {
 
   ngOnInit() {
     // Listen to any changes to the authentication state
-    this.store.select('authentication').subscribe(
+    this.authenticationStateSubscription = this.store.select('authentication').subscribe(
       (authenticationState: State) => {
         this.errorMsg = authenticationState.errorMessage;
         this.isBusy = authenticationState.isBusy;
@@ -38,6 +40,10 @@ export class AuthenticationComponent implements OnInit {
     )
 
     this.buildFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.authenticationStateSubscription.unsubscribe();
   }
 
   buildFormGroup(currentValues: any = {}) {

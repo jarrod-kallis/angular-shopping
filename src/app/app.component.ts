@@ -5,12 +5,13 @@ import { Store } from '@ngrx/store';
 import { Router, RouterEvent, NavigationStart } from '@angular/router';
 
 import { environment } from '../environments/environment';
-import { AuthenticationService } from './shared/services/authentication.service';
+// import { AuthenticationService } from './shared/services/authentication.service';
 import { User } from './shared/models/user.model';
 import { ModalComponent } from './shared/components/modal/modal.component';
 import { DynamicComponentPlaceholderDirective } from './shared/directives/dynamic-component-placeholder.directive';
 import { AppState } from './store/app.reducer';
 import { State } from './authentication/store/authentication.reducer';
+import { Logout, AuthenticationSuccess } from './authentication/store/authentication.actions';
 
 @Component({
   selector: "app-root",
@@ -42,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private autoLogoutSecondsCountDownTimer: NodeJS.Timer;
 
   constructor(
-    private authenticationService: AuthenticationService,
+    // private authenticationService: AuthenticationService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private store: Store<AppState>,
     private router: Router
@@ -70,7 +71,8 @@ export class AppComponent implements OnInit, OnDestroy {
           console.log(userTokenExpirationDurationInSeconds);
 
           this.logoutUserTimer = setTimeout(() => {
-            this.authenticationService.logout();
+            // this.authenticationService.logout();
+            this.store.dispatch(new Logout());
           }, user.getTokenExpirationDuration());
 
           this.autoLogoutUserTimer = setTimeout(() => {
@@ -102,7 +104,14 @@ export class AppComponent implements OnInit, OnDestroy {
         take(1)
       )
       .subscribe((event: NavigationStart) => {
-        this.authenticationService.autoLogin(event.url);
+        // this.authenticationService.autoLogin(event.url);
+        const localStorageUser: string = localStorage.getItem(environment.projectStorageUserKey);
+
+        if (localStorageUser) {
+          const user: User = User.convertFromLocalStorage(localStorageUser);
+
+          this.store.dispatch(new AuthenticationSuccess(user, event.url));
+        }
       });
   }
 

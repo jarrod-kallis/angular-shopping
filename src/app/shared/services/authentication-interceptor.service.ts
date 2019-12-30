@@ -4,14 +4,17 @@ import { Observable } from 'rxjs';
 import { take, exhaustMap, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import { AuthenticationService } from './authentication.service';
+// import { AuthenticationService } from './authentication.service';
 import { User } from '../models/user.model';
 import { AppState } from '../../store/app.reducer';
 import { State } from '../../authentication/store/authentication.reducer';
 
 @Injectable()
 export class AuthenticationInterceptorService implements HttpInterceptor {
-  constructor(private authenticationService: AuthenticationService, private store: Store<AppState>) { }
+  constructor(
+    // private authenticationService: AuthenticationService,
+    private store: Store<AppState>
+  ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // return this.authenticationService.currentUserChangedEvent

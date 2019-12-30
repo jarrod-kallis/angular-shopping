@@ -4,10 +4,11 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 
 import { DataStorageService } from "../shared/services/data-storage.service";
-import { AuthenticationService } from '../shared/services/authentication.service';
+// import { AuthenticationService } from '../shared/services/authentication.service';
 import { User } from '../shared/models/user.model';
 import { AppState } from '../store/app.reducer';
 import { State } from '../authentication/store/authentication.reducer';
+import { Logout } from '../authentication/store/authentication.actions';
 
 @Component({
   selector: "app-header",
@@ -24,13 +25,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private dataStorageService: DataStorageService,
-    private authenticationService: AuthenticationService,
+    // private authenticationService: AuthenticationService,
     private store: Store<AppState>
   ) { }
 
   ngOnInit() {
     // this.currentUserChangedSubscription = this.authenticationService.currentUserChangedEvent
-    this.store.select('authentication')
+    this.currentUserChangedSubscription = this.store.select('authentication')
       .pipe(map((authenticationState: State) => authenticationState.user))
       .subscribe((user: User) => this.isAuthenticated = user && user.hasValidToken())
   }
@@ -48,7 +49,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // }
 
   logout() {
-    this.authenticationService.logout();
+    // this.authenticationService.logout();
+    this.store.dispatch(new Logout());
   }
 
   fetchData() {

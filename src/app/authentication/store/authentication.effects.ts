@@ -5,7 +5,7 @@ import { of, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { LOGIN_START, LoginStart, SIGNUP_START, SignUpStart, AUTHENTICATION_SUCCESS, AuthenticationSuccess, AuthenticationFail } from './authentication.actions';
+import { LOGIN_START, LoginStart, SIGNUP_START, SignUpStart, AUTHENTICATION_SUCCESS, AuthenticationSuccess, AuthenticationFail, LOGOUT } from './authentication.actions';
 import { environment } from '../../../environments/environment';
 import { AuthenticationResponse } from '../../shared/models/authentication-response.model';
 import { User } from '../../shared/models/user.model';
@@ -63,6 +63,15 @@ export class AuthenticationEffects {
         if (url === '' || url.startsWith('/login')) {
           this.router.navigate(['recipes']);
         }
+      })
+    )
+
+  @Effect({ dispatch: false })
+  authenticationLogout = this.actions$
+    .pipe(
+      ofType(LOGOUT),
+      tap(() => {
+        this.router.navigate(['login']);
       })
     )
 

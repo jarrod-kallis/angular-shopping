@@ -8,7 +8,7 @@ import { AuthenticationMode } from '../shared/constants/authentication-mode';
 import { AuthenticationService } from '../shared/services/authentication.service';
 import { AuthenticationResponse } from '../shared/models/authentication-response.model';
 import { AppState } from '../store/app.reducer';
-import { LoginStart } from './store/authentication.actions';
+import { LoginStart, SignUpStart } from './store/authentication.actions';
 import { State } from './store/authentication.reducer';
 
 @Component({
@@ -23,12 +23,13 @@ export class AuthenticationComponent implements OnInit {
   isBusy: boolean = false;
 
   constructor(
-    private authenticationService: AuthenticationService,
-    private router: Router,
+    // private authenticationService: AuthenticationService,
+    // private router: Router,
     private store: Store<AppState>
   ) { }
 
   ngOnInit() {
+    // Listen to any changes to the authentication state
     this.store.select('authentication').subscribe(
       (authenticationState: State) => {
         this.errorMsg = authenticationState.errorMessage;
@@ -92,30 +93,29 @@ export class AuthenticationComponent implements OnInit {
   }
 
   onSubmit() {
-    const value: any = this.form.value;
+    const value: { email: string, password: string } = this.form.value;
 
-    let authenticationObservable: Observable<AuthenticationResponse>;
+    // let authenticationObservable: Observable<AuthenticationResponse>;
 
-    this.isBusy = true;
-    this.errorMsg = "";
+    // this.isBusy = true;
+    // this.errorMsg = "";
 
     if (this.mode === AuthenticationMode.SignUp) {
-      authenticationObservable = this.authenticationService.signUp(value.email, value.password);
+      // authenticationObservable = this.authenticationService.signUp(value.email, value.password);
+      this.store.dispatch(new SignUpStart(value.email, value.password));
     } else if (this.mode === AuthenticationMode.Login) {
       // authenticationObservable = this.authenticationService.login(value.email, value.password);
       this.store.dispatch(new LoginStart(value.email, value.password));
     }
 
-    if (authenticationObservable) {
-      authenticationObservable.subscribe((response: AuthenticationResponse) => {
-        this.errorMsg = "";
-        this.isBusy = false;
+    // authenticationObservable.subscribe((response: AuthenticationResponse) => {
+    //   this.errorMsg = "";
+    //   this.isBusy = false;
 
-        this.router.navigate(["recipes"]);
-      }, errorMessage => {
-        this.errorMsg = errorMessage;
-        this.isBusy = false;
-      });
-    }
+    //   this.router.navigate(["recipes"]);
+    // }, errorMessage => {
+    //   this.errorMsg = errorMessage;
+    //   this.isBusy = false;
+    // });
   }
 }

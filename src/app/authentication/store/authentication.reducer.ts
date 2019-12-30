@@ -1,5 +1,8 @@
 import { User } from '../../shared/models/user.model'
-import { LOGIN_SUCCESS, LoginSuccess, LOGOUT, AuthenticationActions, LOGIN_START, LOGIN_FAIL, LoginFail } from './authentication.actions'
+import {
+  AuthenticationActions, LOGIN_START, SIGNUP_START, LOGOUT,
+  AUTHENTICATION_SUCCESS, AuthenticationSuccess, AUTHENTICATION_FAIL, AuthenticationFail
+} from './authentication.actions'
 
 export interface State {
   user: User;
@@ -16,29 +19,32 @@ const initialState: State = {
 export default (state: State = initialState, action: AuthenticationActions) => {
   switch (action.type) {
     case LOGIN_START:
+    case SIGNUP_START:
       return {
         ...state,
         errorMessage: null,
         isBusy: true
       }
-    case LOGIN_SUCCESS:
+    case AUTHENTICATION_SUCCESS:
       return {
         ...state,
-        user: (<LoginSuccess>action).user,
+        user: (<AuthenticationSuccess>action).user,
         errorMessage: null,
         isBusy: false
       }
-    case LOGIN_FAIL:
+    case AUTHENTICATION_FAIL:
       return {
         ...state,
         user: null,
-        errorMessage: (<LoginFail>action).errorMessage,
+        errorMessage: (<AuthenticationFail>action).errorMessage,
         isBusy: false
       }
     case LOGOUT:
       return {
         ...state,
-        user: initialState.user
+        user: null,
+        errorMessage: null,
+        isBusy: false
       }
     default:
       return state;

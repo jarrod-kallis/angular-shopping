@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, ComponentFactoryResolver, ComponentFactory, ViewChild, ViewContainerRef, ComponentRef, TemplateRef } from "@angular/core";
 import { Subscription } from 'rxjs';
-import { skip, map } from 'rxjs/operators';
+import { skip, map, filter, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { Router, RouterEvent, NavigationStart } from '@angular/router';
 
 import { environment } from '../environments/environment';
 import { AuthenticationService } from './shared/services/authentication.service';
@@ -40,7 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private autoLogoutUserTimer: NodeJS.Timer;
   private autoLogoutSecondsCountDownTimer: NodeJS.Timer;
 
-  constructor(private authenticationService: AuthenticationService, private componentFactoryResolver: ComponentFactoryResolver, private store: Store<AppState>) { }
+  constructor(
+    private authenticationService: AuthenticationService,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<AppState>,
+    private router: Router
+  ) {
+  }
 
   ngOnInit() {
     // This handles all the logic around logging in & out automatically based on local storage & a timer
@@ -87,7 +94,16 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.authenticationService.autoLogin();
+    // Get the current URL before trying to log in automatically, so we can stay on the URL if the user token is still valid
+    this.router.events
+      .pipe(
+        filter((event: RouterEvent) => event instanceof NavigationStart),
+        // Take the first NavigationStart event and then unsubscribe
+        take(1)
+      )
+      .subscribe((event: NavigationStart) => {
+        this.authenticationService.autoLogin(event.url);
+      });
   }
 
   ngOnDestroy() {

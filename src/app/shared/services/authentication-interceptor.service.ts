@@ -17,7 +17,7 @@ export class AuthenticationInterceptorService implements HttpInterceptor {
     // return this.authenticationService.currentUserChangedEvent
     return this.store.select('authentication')
       .pipe(
-        // take(1): This will get the last value emitted and the unsubscribe automatically
+        // take(1): This will get the last value emitted and then unsubscribe automatically
         take(1),
         // When using the Redux store we need to map the whole auth state just to return the user object
         map((authenticationState: State) => authenticationState.user),

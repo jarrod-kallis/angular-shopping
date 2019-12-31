@@ -6,8 +6,8 @@ export const SIGNUP_START: string = "SIGNUP_START";
 export const LOGIN_START: string = "LOGIN_START";
 export const AUTHENTICATION_SUCCESS: string = "AUTHENTICATION_SUCCESS";
 export const AUTHENTICATION_FAIL: string = "AUTHENTICATION_FAIL";
-
 export const LOGOUT: string = "LOGOUT";
+export const AUTO_LOGIN: string = "AUTO_LOGIN";
 
 export class SignUpStart implements Action {
   readonly type: string = SIGNUP_START;
@@ -63,6 +63,10 @@ export class AuthenticationFail implements Action {
 
 export class Logout implements Action {
   readonly type: string = LOGOUT;
+}
+
+export class AutoLogin implements Action {
+  readonly type: string = AUTO_LOGIN;
 }
 
 export type AuthenticationActions = SignUpStart | LoginStart | AuthenticationSuccess | AuthenticationFail | Logout;

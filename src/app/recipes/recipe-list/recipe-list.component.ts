@@ -1,8 +1,12 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Subscription } from "rxjs";
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 
 import { Recipe } from "../recipe.model";
-import { RecipeService } from "../../shared/services/recipe.service";
-import { Subscription } from "rxjs";
+// import { RecipeService } from "../../shared/services/recipe.service";
+import { AppState } from '../../store/app.reducer';
+import { State } from '../store/recipes.reducer';
 
 @Component({
   selector: "app-recipe-list",
@@ -11,7 +15,8 @@ import { Subscription } from "rxjs";
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
   recipes: Recipe[] = [];
-  recipesChangedSubscription: Subscription;
+  // recipesChangedSubscription: Subscription;
+  recipesSubscription: Subscription;
   // recipes: Recipe[] = [
   //   new Recipe(
   //     'Test Recipe',
@@ -27,20 +32,30 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   // @Output("onRecipeSelected") onRecipeSelected2 = new EventEmitter<Recipe>();
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(
+    // private recipeService: RecipeService,
+    private store: Store<AppState>
+  ) { }
 
   ngOnInit() {
-    this.recipesChangedSubscription = this.recipeService.onRecipesChangedEvent.subscribe(
-      (recipes: Recipe[]) => {
-        this.recipes = recipes;
-      }
-    );
+    // this.recipesChangedSubscription = this.recipeService.onRecipesChangedEvent.subscribe(
+    //   (recipes: Recipe[]) => {
+    //     this.recipes = recipes;
+    //   }
+    // );
 
-    this.recipes = this.recipeService.getRecipes();
+    // this.recipes = this.recipeService.getRecipes();
+
+    this.recipesSubscription = this.store.select('recipes')
+      .pipe(
+        map((recipeState: State) => recipeState.recipes)
+      )
+      .subscribe((recipes: Recipe[]) => this.recipes = recipes);
   }
 
   ngOnDestroy() {
-    this.recipesChangedSubscription.unsubscribe();
+    // this.recipesChangedSubscription.unsubscribe();
+    this.recipesSubscription.unsubscribe();
   }
 
   // onRecipeSelected(recipe: Recipe) {

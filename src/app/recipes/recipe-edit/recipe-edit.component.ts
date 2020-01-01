@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import {
   FormGroup,
@@ -7,27 +7,35 @@ import {
   AbstractControl,
   FormArray
 } from "@angular/forms";
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { Recipe } from "../recipe.model";
-import { RecipeService } from "../../shared/services/recipe.service";
+// import { RecipeService } from "../../shared/services/recipe.service";
 import { Ingredient } from "../../shared/ingredient.model";
+import { AppState } from '../../store/app.reducer';
+import { UpdateRecipe, AddRecipe } from '../store/recipes.actions';
+import { State } from '../store/recipes.reducer';
 
 @Component({
   selector: "app-recipe-edit",
   templateUrl: "./recipe-edit.component.html",
   styleUrls: ["./recipe-edit.component.css"]
 })
-export class RecipeEditComponent implements OnInit {
+export class RecipeEditComponent implements OnInit, OnDestroy {
   private recipeIdx: number;
   recipe: Recipe;
   recipeFormGroup: FormGroup;
   editMode: boolean = false;
 
+  private recipesSubscription: Subscription;
+
   constructor(
-    private recipeService: RecipeService,
+    // private recipeService: RecipeService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private store: Store<AppState>
+  ) { }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -36,8 +44,12 @@ export class RecipeEditComponent implements OnInit {
       if (isNaN(this.recipeIdx)) {
         this.recipe = new Recipe("", "", "", []);
       } else {
-        this.recipe = this.recipeService.getRecipe(+params["id"]);
         this.editMode = true;
+        // this.recipe = this.recipeService.getRecipe(this.recipeIdx);
+        this.recipesSubscription = this.store.select('recipes')
+          .subscribe((recipesState: State) => {
+            this.recipe = recipesState.recipes[this.recipeIdx];
+          });
       }
     });
 
@@ -56,6 +68,12 @@ export class RecipeEditComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.recipesSubscription) {
+      this.recipesSubscription.unsubscribe();
+    }
+  }
+
   onSubmit() {
     const value: any = this.recipeFormGroup.value;
     const recipe: Recipe = new Recipe(
@@ -68,11 +86,15 @@ export class RecipeEditComponent implements OnInit {
     );
 
     if (this.editMode) {
-      this.recipeService.updateRecipe(this.recipeIdx, recipe);
+      // this.recipeService.updateRecipe(this.recipeIdx, recipe);
+      this.store.dispatch(new UpdateRecipe(this.recipeIdx, recipe));
+
       this.router.navigate(["../"], { relativeTo: this.route });
     } else {
-      const newRecipeIdx = this.recipeService.addRecipe(recipe);
-      this.router.navigate(["../", newRecipeIdx], { relativeTo: this.route });
+      // const newRecipeIdx = this.recipeService.addRecipe(recipe);
+      this.store.dispatch(new AddRecipe(recipe));
+
+      // this.router.navigate(["../", newRecipeIdx], { relativeTo: this.route });
     }
   }
 

@@ -1,10 +1,10 @@
 // import { Subject } from "rxjs";
 
-import { Recipe } from "../../recipes/recipe.model";
-import { Subject } from "rxjs";
+// import { Recipe } from "../../recipes/recipe.model";
+// import { Subject } from "rxjs";
 
 export class RecipeService {
-  private recipes: Recipe[] = [];
+  // private recipes: Recipe[] = [];
   //   [new Recipe(
   //     "Test Recipe",
   //     "This is simply a test",
@@ -23,50 +23,50 @@ export class RecipeService {
 
   // onRecipeSelectedEvent = new Subject<Recipe>();
 
-  onRecipesChangedEvent = new Subject<Recipe[]>();
+  // onRecipesChangedEvent = new Subject<Recipe[]>();
 
-  getRecipes() {
-    // Create a copy of the recipes array
-    return this.recipes.slice();
-  }
+  // getRecipes() {
+  //   // Create a copy of the recipes array
+  //   return this.recipes.slice();
+  // }
 
-  getRecipe(id: number) {
-    return this.getRecipes()[id];
-  }
+  // getRecipe(id: number) {
+  //   return this.getRecipes()[id];
+  // }
 
   // onRecipeSelected(recipe: Recipe) {
   //   // this.selectedRecipe = recipe;
   //   this.onRecipeSelectedEvent.next(recipe);
   // }
 
-  setRecipes(recipes: Recipe[]) {
-    this.recipes = recipes;
-    this.onRecipesChangedEvent.next(this.getRecipes());
-  }
+  // setRecipes(recipes: Recipe[]) {
+  //   this.recipes = recipes;
+  //   this.onRecipesChangedEvent.next(this.getRecipes());
+  // }
 
-  addRecipe(recipe: Recipe): number {
-    const recipes: Recipe[] = this.getRecipes();
-    const recipeIdx: number = recipes.push(recipe) - 1;
+  // addRecipe(recipe: Recipe): number {
+  //   const recipes: Recipe[] = this.getRecipes();
+  //   const recipeIdx: number = recipes.push(recipe) - 1;
 
-    this.recipes = recipes;
-    this.onRecipesChangedEvent.next(this.getRecipes());
+  //   this.recipes = recipes;
+  //   this.onRecipesChangedEvent.next(this.getRecipes());
 
-    return recipeIdx;
-  }
+  //   return recipeIdx;
+  // }
 
-  updateRecipe(recipeIdx: number, recipe: Recipe) {
-    const recipes: Recipe[] = this.getRecipes();
-    recipes[recipeIdx] = recipe;
+  // updateRecipe(recipeIdx: number, recipe: Recipe) {
+  //   const recipes: Recipe[] = this.getRecipes();
+  //   recipes[recipeIdx] = recipe;
 
-    this.recipes = recipes;
-    this.onRecipesChangedEvent.next(this.getRecipes());
-  }
+  //   this.recipes = recipes;
+  //   this.onRecipesChangedEvent.next(this.getRecipes());
+  // }
 
-  deleteRecipe(recipeIdx: number) {
-    const recipes: Recipe[] = this.getRecipes();
-    recipes.splice(recipeIdx, 1);
+  // deleteRecipe(recipeIdx: number) {
+  //   const recipes: Recipe[] = this.getRecipes();
+  //   recipes.splice(recipeIdx, 1);
 
-    this.recipes = recipes;
-    this.onRecipesChangedEvent.next(this.getRecipes());
-  }
+  //   this.recipes = recipes;
+  //   this.onRecipesChangedEvent.next(this.getRecipes());
+  // }
 }

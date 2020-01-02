@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { tap, take, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { tap, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import { ADD_RECIPE, FETCH_RECIPES, SetRecipes, FetchRecipes, SAVE_RECIPES, SaveRecipes } from './recipes.actions';
+import {
+  ADD_RECIPE, FETCH_RECIPES, SetRecipes, SAVE_RECIPES,
+  SaveRecipes, AddRecipe, UPDATE_RECIPE, DELETE_RECIPE, Route
+} from './recipes.actions';
 import { AppState } from '../../store/app.reducer';
 import { State } from './recipes.reducer';
 import { Recipe } from '../recipe.model';
@@ -55,17 +58,21 @@ export class RecipesEffects {
   recipeAdded = this.actions$
     .pipe(
       ofType(ADD_RECIPE),
-      tap((data) => {
-        console.log(data);
+      withLatestFrom(this.store.select('recipes')),
+      map(([addRecipe, recipesState]: [AddRecipe, State]) => ([addRecipe.route, recipesState.recipes])),
+      tap(([route, recipes]: [ActivatedRoute, Recipe[]]) => {
+        this.router.navigate(["../", recipes.length - 1], { relativeTo: route });
+      })
+    );
 
-        this.store.select('recipes')
-          .pipe(
-            take(1),
-            map((recipesState: State) => recipesState.recipes)
-          ).subscribe((recipes: Recipe[]) => {
-            console.log(data);
-            this.router.navigate(["recipes", recipes.length - 1]);
-          })
+  @Effect({ dispatch: false })
+  recipeUpdated = this.actions$
+    .pipe(
+      ofType(UPDATE_RECIPE, DELETE_RECIPE),
+      withLatestFrom(this.store.select('recipes')),
+      map(([updateOrDeleteRecipe, recipesState]: [Route, State]) => updateOrDeleteRecipe.route),
+      tap((route: ActivatedRoute) => {
+        this.router.navigate(["../"], { relativeTo: route });
       })
     );
 

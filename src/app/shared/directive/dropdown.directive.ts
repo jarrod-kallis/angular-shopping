@@ -30,8 +30,11 @@ export class DropdownDirective {
   @HostListener("document:click", ["$event"]) toggleOpenFromAnywhere(
     event: Event
   ) {
+    // The element that the user clicked on
     // console.log(event.target);
+    // The element that the directive has been placed on
     // console.log(this.elRef.nativeElement);
+    // Is the 'click-on element' within the 'directive element'
     // console.log("Contains: " + this.elRef.nativeElement.contains(event.target));
 
     this.isOpen = this.elRef.nativeElement.contains(event.target)
@@ -39,5 +42,5 @@ export class DropdownDirective {
       : false;
   }
 
-  constructor(private elRef: ElementRef) {}
+  constructor(private elRef: ElementRef) { }
 }
